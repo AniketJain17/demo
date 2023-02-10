@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS CaPortalEntity (
+    name TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+insertReminder:
+INSERT OR IGNORE INTO CaPortalEntity(name,password)
+VALUES (?,?);

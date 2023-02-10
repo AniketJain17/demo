@@ -1,7 +1,10 @@
+val sqldelightVersion = "1.5.4"
+
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
     id("org.jetbrains.compose")
+    id("com.squareup.sqldelight").version("1.5.4")
 }
 
 kotlin {
@@ -16,23 +19,33 @@ kotlin {
                 api(compose.material)
                 // Needed only for preview.
                 implementation(compose.preview)
+                // SQL Delight
+                implementation("com.squareup.sqldelight:runtime:$sqldelightVersion")
+                implementation("com.squareup.sqldelight:coroutines-extensions:$sqldelightVersion")
             }
         }
         named("androidMain") {
             dependencies {
                 api("androidx.appcompat:appcompat:1.5.1")
                 api("androidx.core:core-ktx:1.8.0")
+                // SQL Delight
+                implementation("com.squareup.sqldelight:android-driver:$sqldelightVersion")
+            }
+        }
+        named("desktopMain") {
+            dependencies {
+                implementation("com.squareup.sqldelight:sqlite-driver:$sqldelightVersion")
             }
         }
     }
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
     }
 
     compileOptions {
@@ -46,4 +59,28 @@ android {
             res.srcDirs("src/androidMain/res")
         }
     }
+    namespace = "com.myapplication.common"
 }
+dependencies {
+    implementation(project(mapOf("path" to ":common")))
+    implementation(project(mapOf("path" to ":common")))
+    implementation(project(mapOf("path" to ":common")))
+    implementation(project(mapOf("path" to ":common")))
+}
+
+sqldelight {
+    database("CaPortalDatabase") {
+        packageName = "com.myapplication.common"
+        sourceFolders = listOf("sqldelight")
+        schemaOutputDirectory =
+            file("src/commonMain/sqldelight/example/CAPortal/common/database")
+    }
+}
+/*dependencies {
+    implementation("androidx.compose.material:material:1.3.1")
+    implementation("androidx.compose.material:material-icons-core:1.3.1")
+    implementation("androidx.annotation:annotation-jvm:+")
+    implementation("androidx.compose.ui:ui-unit:1.3.3")
+    implementation("androidx.compose.ui:ui:1.3.3")
+    implementation("androidx.compose.foundation:foundation:1.3.1")
+}*/
